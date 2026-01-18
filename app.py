@@ -2,40 +2,30 @@ import streamlit as st
 import requests
 from datetime import datetime
 import pytz
-import streamlit.components.v1 as components
+import time
 
 # ١. ڕێکخستنا سەرەکی
 st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="💰")
 
-# ٢. دروستکرنا دەمژمێرا زیندی (Live Clock) ب JavaScript
-st.markdown("""
-    <div id="clock-container" style="background-color: #1e1e1e; padding: 20px; border-radius: 15px; border: 2px solid #00ff00; text-align: center; box-shadow: 2px 2px 10px rgba(0,255,0,0.2); margin-bottom: 20px;">
-        <h1 id="clock" style="color: #00ff00; margin: 0; font-family: 'Courier New', Courier, monospace; font-size: 45px;">00:00:00</h1>
-        <p id="date" style="color: #cccccc; margin: 5px; font-size: 18px;"></p>
-    </div>
+# ٢. وەرگرتنا دەمێ دروست یێ دهۆکێ
+iq_timezone = pytz.timezone('Asia/Baghdad')
+now = datetime.now(iq_timezone)
 
-    <script>
-    function updateClock() {
-        var now = new Date();
-        var options = { timeZone: "Asia/Baghdad", hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-        var timeString = now.toLocaleTimeString("en-US", options);
-        var dateString = now.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-        
-        document.getElementById('clock').innerHTML = "⏰ " + timeString;
-        document.getElementById('date').innerHTML = "📅 " + dateString;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-    </script>
+# ٣. نیشاندانا دەمژمێرێ ب شێوەیەکێ مەزن و دیار
+st.markdown(f"""
+    <div style="background-color: #1e1e1e; padding: 15px; border-radius: 10px; border: 2px solid #00ff00; text-align: center;">
+        <h1 style="color: #00ff00; margin: 0; font-family: monospace;">⏰ {now.strftime('%I:%M:%S %p')}</h1>
+        <p style="color: white; margin: 0;">{now.strftime('%Y-%m-%d')}</p>
+    </div>
     """, unsafe_allow_html=True)
 
-# ٣. ناڤ و پەیوەندی
-st.title("💰 بۆڕسا مەتین (دهۆک)")
+# ٤. ناڤ و پەیوەندی
+st.title("💰 بۆڕسا  (دهۆک)")
 st.markdown(f"### 👤 گەشەپێدەر: مەتین عدنان محمد")
-st.link_button("✈️ پەیوەندی ب تێلەگرامێ ڤە بکە", "https://t.me/badinimatin")
+st.link_button("✈️ Telegram", "https://t.me/badinimatin")
 st.write("---")
 
-# ٤. وەرگرتنا بهایێ دۆلارى
+# ٥. وەرگرتنا بهایێ دۆلاری
 try:
     url = "https://api.exchangerate-api.com/v4/latest/USD"
     data = requests.get(url).json()
@@ -46,9 +36,14 @@ try:
     
     st.write("---")
     st.markdown("### 🧮 حاسیبەیێ بازارێ دهۆکێ")
-    amount = st.number_input("چەند دۆلار تە هەنە؟", value=100.0, step=1.0)
+    amount = st.number_input("چەند دۆلار تە هەنە؟", value=100.0)
     total_iqd = amount * dhok_rate
     st.success(f"بهایێ {amount:,} دۆلاران دبیتە: **{total_iqd:,.0f}** دینار")
 
 except:
-    st.error("کێشەک هەبوو د وەرگرتنا داتایان دا!")
+    st.error("کێشەک هەبوو!")
+
+# ٦. فێڵەکا زەریف بۆ نووکرنا دەمژمێرێ (Refresh)
+# ئەڤە دێ هەر ١٠ چرکەیان جارەکێ سایتێ تە نوو کەت دا دەمژمێر نەڕاوەستیت
+time.sleep(10)
+st.rerun()
