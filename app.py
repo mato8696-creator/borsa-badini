@@ -1,11 +1,10 @@
 import streamlit as st
 import requests
 
-# ١. ڕێکخستنا لاپەڕەی
+# ١. ڕێکخستنا سەرەکی
 st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="💰")
 
 st.title("💰 حاسیبەیێ بلەز یێ دهۆکێ")
-st.write("---")
 
 # ٢. وەرگرتنا بهایێ دۆلاری
 try:
@@ -16,25 +15,25 @@ try:
 except:
     dhok_rate = 1468.50 
 
-# ٣. بەشێ حاسیبەیێ ب شێوەیەکێ ئۆتۆماتیک (بێ Enter)
-st.subheader("💵 بڕێ دۆلاران لێرە دیار بکە:")
+st.write(f"📊 بهایێ ١٠٠ دۆلاران نوکە: **{dhok_rate * 100:,.0f}** دینار")
+st.write("---")
 
-# مە لێرە Slider دانا، ب ڤێ ڕێکێ هەر دەمێ بلەڤینیت، ئەنجام دێ گوهۆڕیت
-usd_amount = st.slider("", min_value=1, max_value=1000, value=100, step=1)
+# ٣. بەشێ حاسیبەیێ: ل ڤێرە بکار‌هێنەر دشێت ب کەیفا خۆ ژمارەیێ دیار کەت
+st.subheader("💵 بڕێ دۆلاران دەستنیشان بکە:")
 
-# ٤. نیشاندانا ئەنجامی ب شێوەیەکێ زیندی
+# من ل ڤێرە Slider بکارئینایە چونکە ئێکسەر ئەنجامی ددەت بێ Enter
+usd_amount = st.slider("تبلا خۆ ل سەر ڤێ خەتێ بلەڤینە دا ژمارەیێ هەلبژیری:", min_value=1, max_value=1000, value=100)
+
+# ٤. حسابکرن و نیشاندانا ئەنجامی
 iqd_result = usd_amount * dhok_rate
 
 st.markdown(f"""
-    <div style="background-color: #f0f2f6; padding: 20px; border-radius: 10px; text-align: center; border-left: 5px solid #4CAF50;">
-        <h3 style="color: #333;">بهایێ {usd_amount} دۆلاران:</h3>
-        <h1 style="color: #4CAF50;">{iqd_result:,.0f} دینار</h1>
+    <div style="background-color: #1e1e1e; padding: 25px; border-radius: 15px; border: 2px solid #00ff00; text-align: center;">
+        <h2 style="color: white; margin: 0;">بهایێ {usd_amount} دۆلاران دبیتە:</h2>
+        <h1 style="color: #00ff00; font-size: 50px; margin: 10px;">{iqd_result:,.0f}</h1>
+        <h2 style="color: white; margin: 0;">دینارێن عیراقی</h2>
     </div>
     """, unsafe_allow_html=True)
-
-# ٥. زانیاریێن زێدە
-st.write("---")
-st.metric("بهایێ بازارێ دهۆکێ (١٠٠$)", f"{dhok_rate * 100:,.0f} IQD")
 
 st.write("---")
 st.markdown("### 👤 گەشەپێدەر: مەتین عدنان")
