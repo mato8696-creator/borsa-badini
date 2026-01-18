@@ -10,7 +10,8 @@ if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
 # ئەگەر تە ڤیا کۆدی بگوهۆڕی، ئەڤ "1234" بگوهۆڕە
-correct_password = "1234"
+correct_password = "دهوک"
+"کود مە تنی دی جیکەی دهوک"
 
 if not st.session_state["authenticated"]:
     st.title("🔐 چوونەژوورێ بۆ بۆڕسا دهۆک")
