@@ -12,13 +12,13 @@ now = datetime.now(iq_timezone)
 current_time = now.strftime("%I:%M:%S %p")
 current_date = now.strftime("%Y-%m-%d")
 
-# ٣. نیشاندانا دەمژمێرێ ب شێوەیەکێ جوان و مەزن
+# ٣. نیشاندانا دەمژمێرێ ب شێوەیەکێ جوان
 st.markdown(f"""
-    <div style="background-color: #0e1117; padding: 20px; border-radius: 10px; border: 2px solid #4CAF50; text-align: center;">
-        <h1 style="color: #4CAF50; margin: 0;">⏰ {current_time}</h1>
-        <p style="color: white; margin: 5px;">📅 {current_date}</p>
+    <div style="background-color: #1e1e1e; padding: 20px; border-radius: 15px; border: 2px solid #00ff00; text-align: center; box-shadow: 2px 2px 10px rgba(0,255,0,0.2);">
+        <h1 style="color: #00ff00; margin: 0; font-family: 'Courier New', Courier, monospace;">⏰ {current_time}</h1>
+        <p style="color: #cccccc; margin: 5px; font-size: 18px;">📅 {current_date}</p>
     </div>
-    """, unsafe_allow_status=True)
+    """, unsafe_allow_html=True)
 
 st.write("") # بۆشایی
 
@@ -34,7 +34,7 @@ try:
     data = requests.get(url).json()
     base_rate = data['rates']['IQD']
     
-    # ڕێکخستنا بهایێ دهۆکێ (١٤٦،٧٥٠)
+    # ڕێکخستنا بهایێ دهۆکێ
     dhok_rate = base_rate + 157.5
     
     st.metric(label="بهایێ ١ دۆلاری ل دهۆکێ (ئەڤڕۆ)", value=f"{dhok_rate:,.2f} IQD")
@@ -49,5 +49,3 @@ try:
 
 except:
     st.error("کێشەک هەبوو د وەرگرتنا داتایان دا!")
-
-st.info("تێبینی: هەر جارەکا تو 'Refresh' بکەی، دەمژمێر و بها دێ نوو بن.")
