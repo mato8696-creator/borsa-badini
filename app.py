@@ -6,14 +6,15 @@ from streamlit_autorefresh import st_autorefresh
 st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="🌍", layout="centered")
 st_autorefresh(interval=60000, limit=100, key="fscounter")
 
-# 2. سیستەمێ هەلبژارتنا زمانی و ل بیر مانا وێ
+# 2. سیستەمێ زمانان
 if 'language' not in st.session_state:
     st.session_state.language = None
 
-# 3. ژمارەکەرێ سەردانیکەران
-if 'visits' not in st.session_state:
-    st.session_state.visits = 1150 # دەسپێکەکا بلند بۆ متمانێ
-st.session_state.visits += 1
+# 3. ژمارەکەرێ بینەران (تنێ بۆ تە)
+# ئەڤ ژمارەیە دێ هەردەم زێدە بیت لێ کەس نابینیت
+if 'count' not in st.session_state:
+    st.session_state.count = 1250 # ئەڤە دەسپێکا ژمارێ یە
+st.session_state.count += 1
 
 # 4. لاپەڕێ دەسپێکێ (هەلبژارتنا زمانی)
 if st.session_state.language is None:
@@ -38,38 +39,35 @@ if st.session_state.language is None:
         if st.button("العربية 🇮🇶"): st.session_state.language = "Arabic"; st.rerun()
     with c3:
         if st.button("English 🇺🇸"): st.session_state.language = "English"; st.rerun()
-    
-    # نیشاندانا ژمارا سەردانیکەران ل ژێر زمانان
-    st.markdown(f"<p style='margin-top:50px; color:#555 !important;'>👥 سەردانیکەر: {st.session_state.visits}</p>", unsafe_allow_html=True)
     st.stop()
 
-# 5. وەرگێڕان
+# 5. وەرگێڕانان
 translations = {
     "Kurdish": {
         "title": "بۆڕسا دهۆک یا جیهانی", "gold_label": "بهایێ مسقاڵا زێڕی (عيار ٢١)", 
         "gold_calc": "⚖️ کێشێ زێڕی (غرام):", "gold_res": "بهایێ غرامان:",
         "conv_title": "کالکۆلێتەرێ دراڤان", "curr_label": "دراڤەکێ هەلبژێرە:", 
         "amt_label": "بڕێ پارەی:", "btn": "حساب بکە", "res_label": "ئەنجام ب دینار:",
-        "visitors": "👥 ژمارا سەردانیکەران:", "global_rates": "🌍 بهایێ دۆلاری ل جیهانێ (١ دۆلار)"
+        "global_rates": "🌍 بهایێ دۆلاری ل جیهانێ (١ دۆلار)"
     },
     "Arabic": {
         "title": "بورصة دهوك العالمية", "gold_label": "سعر مثقال الذهب (عيار ٢١)", 
         "gold_calc": "⚖️ وزن الذهب (غرام):", "gold_res": "سعر الغرامات:",
         "conv_title": "محول العملات", "curr_label": "اختر العملة:", 
         "amt_label": "المبلغ:", "btn": "احسب الآن", "res_label": "النتيجة بالدينار:",
-        "visitors": "👥 عدد الزوار:", "global_rates": "🌍 أسعار الدولار عالمياً (١ دولار)"
+        "global_rates": "🌍 أسعار الدولار عالمياً (١ دولار)"
     },
     "English": {
         "title": "Duhok Global Borsa", "gold_label": "Gold Price (21K Mithqal)", 
         "gold_calc": "⚖️ Gold Weight (Gram):", "gold_res": "Total Price:",
         "conv_title": "Currency Converter", "curr_label": "Select Currency:", 
         "amt_label": "Amount:", "btn": "Calculate", "res_label": "Result in IQD:",
-        "visitors": "👥 Visitors Count:", "global_rates": "🌍 Global USD Rates (1 USD)"
+        "global_rates": "🌍 Global USD Rates (1 USD)"
     }
 }
 t = translations[st.session_state.language]
 
-# 6. ستایلێ CSS (ڕەش و سپی و زێڕین)
+# 6. ستایلێ CSS (ڕەنگێن گەش)
 st.markdown("""
 <style>
     .stApp { background-color: #050505; }
@@ -81,19 +79,18 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 7. وەرگرتنا بها (Live Data)
+# 7. وەرگرتنا بها
 try:
     data = requests.get("https://api.exchangerate-api.com/v4/latest/USD").json()
     iqd_rate = data['rates']['IQD'] + 158.5
     rates = data['rates']
-    gold_mithqal = 488000
+    gold_mithqal = 492000 # دێ هێتە گوهۆڕین ل دویڤ بازارێ دهۆکێ
     gold_gram = gold_mithqal / 5
 except:
-    iqd_rate, rates, gold_mithqal, gold_gram = 1485, {}, 488000, 97600
+    iqd_rate, rates, gold_mithqal, gold_gram = 1485, {}, 492000, 98400
 
-# 8. ناڤ و نیشان و ژمارا سەردانیکەران
+# 8. لاپەڕێ سەرەکی (چو ژمارا بینەران ل ڤێرێ نینە)
 st.markdown(f"<h1 style='text-align:center; color:#bf953f;'>{t['title']}</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align:center;'>{t['visitors']} {st.session_state.visits}</p>", unsafe_allow_html=True)
 
 # 9. پشکا زێڕی
 st.markdown(f"""<div class="card"><p style="color:#bf953f !important; margin:0;">{t['gold_label']}</p><h2 style="color:#00FF00 !important; margin:5px;">{gold_mithqal:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
@@ -107,18 +104,16 @@ curr = st.selectbox(t['curr_label'], ["USD 💵", "TRY 🇹🇷", "EUR 🇪🇺"
 amt = st.number_input(t['amt_label'], min_value=0.0, value=100.0)
 if st.button(t['btn']): pass
 
-# حسابکرن
 if "USD" in curr: res = amt * iqd_rate
 elif "TRY" in curr: res = (amt / rates.get('TRY', 34)) * iqd_rate
 elif "EUR" in curr: res = (amt / rates.get('EUR', 0.92)) * iqd_rate
 else: res = (amt / rates.get('IRR', 60000)) * iqd_rate
 st.success(f"{t['res_label']} {res:,.0f}")
 
-# 11. بهایێ دۆلاری ل جیهانێ (ئەوا تە ڤیای زێدە بکەین)
+# 11. بهایێن جیهانی
 st.write("---")
 st.markdown(f"<h4>{t['global_rates']}</h4>", unsafe_allow_html=True)
 global_list = {"EUR 🇪🇺": "EUR", "TRY 🇹🇷": "TRY", "GBP 🇬🇧": "GBP", "SAR 🇸🇦": "SAR", "AED 🇦🇪": "AED"}
-
 for name, code in global_list.items():
     val = rates.get(code, 0)
     st.markdown(f"""<div class="global-card"><p style="margin:0; font-size:14px;">{name}: <span style="color:#00FF00;">{val:,.2f}</span></p></div>""", unsafe_allow_html=True)
@@ -126,3 +121,12 @@ for name, code in global_list.items():
 # 12. تێلەگرام
 st.write("")
 st.markdown(f"""<a href="https://t.me/badinimatin" target="_blank" style="text-decoration:none;"><div style="background-color:#0088cc; padding:12px; border-radius:10px; text-align:center; color:white; font-weight:bold;">Telegram</div></a>""", unsafe_allow_html=True)
+
+# 13. پشکا نهێنی یا مەتینی (Admin Sidebar)
+# ئەڤە پشکا پاسۆردێ یە دا کەس نەببینیت
+with st.sidebar:
+    st.markdown("<h3 style='color:white;'>Matin's Control</h3>", unsafe_allow_html=True)
+    pw = st.text_input("Enter Password:", type="password")
+    if pw == "matin2026":
+        st.metric("Total Visitors:", st.session_state.count)
+        st.info("ئەڤ ژمارەیە تنێ بۆ تە دیارە!")
