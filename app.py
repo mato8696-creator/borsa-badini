@@ -8,7 +8,20 @@ st.set_page_config(page_title="بۆڕسا دهۆک - مەتین", page_icon="�
 # 2. نووکرنا ئۆتۆماتیک هەر 60 چرکەیان
 st_autorefresh(interval=60000, limit=100, key="fscounter")
 
-# 3. ستایلێ گشتی و دوکما سۆر
+# 3. ژمارەکەرێ نهێنی (تنێ تو دێ بینی)
+if 'total_visits' not in st.session_state:
+    st.session_state.total_visits = 0
+st.session_state.total_visits += 1
+
+# دروستکرنا پشکەکا ڤەشارتی ل لایێ چەپێ (Sidebar)
+with st.sidebar:
+    st.title("🛠️ کۆنترۆلا مەتینی")
+    st.write("ئەڤ بەشە تنێ بۆ تە دیارە")
+    st.metric(label="ژمارا سەردانیکەران", value=st.session_state.total_visits)
+    st.write("---")
+    st.info("ئەگەر تو سایتێ خۆ Reboot بکەی، ئەڤ ژمارە دێ زێدە بیت.")
+
+# 4. ستایلێ گشتی (CSS)
 st.markdown("""
     <style>
     .stApp { background-color: #0e1117; }
@@ -18,19 +31,10 @@ st.markdown("""
         width: 100%; height: 45px;
         border-radius: 10px; font-weight: bold; border: none;
     }
-    @keyframes dollarMove {
-        from { transform: translateY(0px); opacity: 0.1; }
-        to { transform: translateY(-20px); opacity: 0.4; }
-    }
-    .floating-dollar {
-        display: inline-block; color: #00FF00; font-size: 25px;
-        animation: dollarMove 2s ease-in-out infinite alternate;
-        position: absolute; z-index: 0;
-    }
     </style>
 """, unsafe_allow_html=True)
 
-# 4. وەرگرتنا بها ژ ئینتەرنێتێ
+# 5. وەرگرتنا بها ژ ئینتەرنێتێ
 try:
     url = "https://api.exchangerate-api.com/v4/latest/USD"
     data = requests.get(url).json()
@@ -42,10 +46,7 @@ except:
     usd_to_try = 31.0
     usd_to_irr = 45000
 
-# 5. ناڤ و نیشان و لڤینا دۆلاری
-st.markdown('<div class="floating-dollar" style="left:5%; top:10%;"> $ </div>', unsafe_allow_html=True)
-st.markdown('<div class="floating-dollar" style="right:10%; top:20%;"> $ </div>', unsafe_allow_html=True)
-
+# 6. ناڤ و نیشان
 st.markdown("""
     <div style="text-align: center; font-weight: bold; font-size: 50px;">
         <span style="background: linear-gradient(to right, #FF0000 33%, #FFD700 33%, #FFD700 66%, #008000 66%); 
@@ -60,7 +61,7 @@ st.markdown("""
 
 st.write("---")
 
-# 6. بەشێ حسابکرنا پارەی
+# 7. بەشێ حسابکرنا پارەی
 currency_type = st.selectbox("دراڤەکێ هەلبژێرە:", ["دۆلار 💵", "لیرەیا تورکی 🇹🇷", "تمەنێ ئیرانی 🇮🇷"])
 col1, col2 = st.columns([3, 1])
 with col1:
@@ -76,7 +77,7 @@ elif "لیرەیا تورکی" in currency_type:
 else:
     result = (amount / usd_to_irr) * usd_to_iqd
 
-# 7. نیشاندانا ئەنجامی
+# 8. نیشاندانا ئەنجامی
 st.markdown(f"""
     <div style="background-color: rgba(0, 0, 0, 0.7); padding: 25px; border-radius: 15px; border: 2px solid #00FF00; text-align: center;">
         <h3 style="color: white; margin: 0;">ئەنجام ب دینار:</h3>
@@ -85,20 +86,15 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# 8. پشکا ڕیکلامێ و وەرگرتنا پارەی (Monetization)
+# 9. پشکا ڕیکلامێ (Monetization)
 st.write("")
 st.markdown("""
     <div style="background-color: #1a1a1a; padding: 20px; border-radius: 15px; border: 2px dashed #FFD700; text-align: center;">
         <h4 style="color: #FFD700; margin: 0;">📢 جهێ ڕیکلاما تە ل ڤێرێ 📢</h4>
-        <p style="color: white; font-size: 13px; margin: 10px 0;">بۆ بەڵاڤکرنا ڕیکلامێن نڤیسینگەه و کارێن خۆ ل سەر ڤی سایتی، پەیوەندیێ ب مە بکەن.</p>
         <a href="https://t.me/badinimatin" target="_blank" style="text-decoration: none;">
-            <button style="background-color: #0088cc; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                📩 پەیوەندی ب تێلەگرامی بکە
+            <button style="background-color: #0088cc; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px;">
+                📩 پەیوەندی ب مە بکە
             </button>
         </a>
     </div>
 """, unsafe_allow_html=True)
-
-# 9. لینکا تێلەگراما شەخسی
-st.write("---")
-st.link_button("✈️ Telegram: Badini Matin", "https://t.me/badinimatin", use_container_width=True)
