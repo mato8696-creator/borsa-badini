@@ -1,4 +1,4 @@
-import streamlit as st
+گگگimport streamlit as st
 import requests
 from streamlit_autorefresh import st_autorefresh
 from datetime import datetime
@@ -83,14 +83,6 @@ if st.button(t['btn'], key="btn_usd") or usd_val:
     res_usd = usd_val * one_usd
     st.markdown(f"""<div class="result-box"><p style="margin:0; color:#fff;">{t['res']}</p><h2 style="color:#00FF00 !important; margin:0;">{res_usd:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
 
-# 9. پشکا زێڕی
-st.write("---")
-st.markdown(f"<h3>{t['gold_calc']}</h3>", unsafe_allow_html=True)
-gold_val = st.number_input("Gram:", min_value=0.0, value=26.0, step=1.0)
-if st.button(t['btn'], key="btn_gold") or gold_val:
-    res_gold = gold_val * gold_gram
-    st.markdown(f"""<div style="background-color:rgba(255,255,255,0.1); padding:15px; border-radius:10px; text-align:center; border:2px solid #bf953f; margin-top:15px;"><p style="margin:0; color:#fff;">{t['res']}</p><h2 style="color:#fcf6ba !important; margin:0;">{res_gold:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
-
 # 10. تێلەگرام
 st.markdown(f'<a href="https://t.me/badinimatin" target="_blank" class="tele-btn">🔗 {t["tele"]}</a>', unsafe_allow_html=True)
 
@@ -100,3 +92,4 @@ with st.sidebar:
     pw = st.text_input("Password:", type="password")
     if pw == "matin2026":
         st.metric("بینەرێن ئەڤڕۆ", st.session_state.count)
+        
