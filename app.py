@@ -14,7 +14,7 @@ except:
     dhok_rate = 1468.50
 
 # ٣. ناڤ ونیشان
-st.markdown("<h1 style='text-align: center;'>💰 بۆڕسا مەتین</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>💰 بۆڕسا دهوکچچگچ</h1>", unsafe_allow_html=True)
 st.write("---")
 
 # ٤. خانەیا نڤیسینا دۆلاران دگەل ڕێنمایا ب کوردی
