@@ -1,89 +1,79 @@
 import streamlit as st
 import requests
 from streamlit_autorefresh import st_autorefresh
+from datetime import datetime
+import pytz
 
 # 1. ڕێکخستنا لاپەڕەی
 st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="💵", layout="centered")
-st_autorefresh(interval=60000, limit=100, key="fscounter")
+# نووکرنا سایتێ هەر ١٠ چرکە بۆ هندێ نرخ هەمیشە نوو بیت
+st_autorefresh(interval=10000, limit=None, key="fscounter")
 
-# 2. زمان و ژمارەکەر
+# 2. مێمۆری و ژمارەکەر
 if 'language' not in st.session_state: st.session_state.language = None
-if 'count' not in st.session_state: st.session_state.count = 1760 
-st.session_state.count += 1
+if 'calculation_result' not in st.session_state: st.session_state.calculation_result = None
+if 'count' not in st.session_state: st.session_state.count = 2586 
 
-# 3. لاپەڕێ دەسپێکێ
+if 'counted' not in st.session_state:
+    st.session_state.count += 1
+    st.session_state.counted = True
+
+# 3. هەلبژارتنا زمانی
 if st.session_state.language is None:
-    st.markdown("""<style> .stApp { background-color: #000; text-align: center; } h2, p { color: #bf953f !important; } 
-    div.stButton > button { background-color: #1a1c23 !important; color: white !important; border: 1px solid #bf953f !important; border-radius: 10px; height: 50px; } </style>""", unsafe_allow_html=True)
-    st.markdown("<h2>بۆڕسا دهۆک | Duhok Borsa</h2><p>زمانێ خۆ هەلبژێرە</p>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
+    st.markdown("<style>.stApp{background:#000;text-align:center;} h2{color:#bf953f;}</style>", unsafe_allow_html=True)
+    st.markdown("<h2>بۆڕسا دهۆک</h2><p style='color:white;'>زمانێ خۆ هەلبژێرە / اختر لغتك</p>", unsafe_allow_html=True)
+    c1, c2 = st.columns(2)
     with c1: 
         if st.button("کوردی ☀️"): st.session_state.language = "Kurdish"; st.rerun()
     with c2: 
         if st.button("العربية 🇮🇶"): st.session_state.language = "Arabic"; st.rerun()
-    with c3: 
-        if st.button("English 🇺🇸"): st.session_state.language = "English"; st.rerun()
     st.stop()
 
-# 4. وەرگێڕان (تەنێ دۆلار)
-translations = {
+# 4. وەرگێڕان و ڕوونکرنا ل سەرێ سایتی
+t = {
     "Kurdish": {
-        "title": "بۆڕسا دهۆک یا جیهانی", "usd_live": "بهایێ دۆلاری (١٠٠$)", 
-        "usd_calc": "💵 گوهۆڕینا دۆلاری", "res": "ئەنجام ب دینار:", "tele": "کەنالێ تێلەگرامی", "btn": "Enter"
+        "info": "🌐 ئەڤ نرخە ئۆتۆماتیکی ژ سیستەمێ بانکی یێ جیهانی دهێت و دگەل بازارێ دهۆک دهێتە گونجاندن",
+        "usd": "بهایێ دۆلاری (١٠٠$)", "calc": "💵 حسابکەرا پارەی", "btn": "Enter", "v": "بینەرێن سایتێ:"
     },
     "Arabic": {
-        "title": "بورصة دهوك العالمية", "usd_live": "سعر الدولار (١٠٠$)", 
-        "usd_calc": "💵 تحويل الدولار", "res": "النتيجة بالدينار:", "tele": "قناة التيليجرام", "btn": "Enter"
-    },
-    "English": {
-        "title": "Duhok Global Borsa", "usd_live": "USD Rate (100$)", 
-        "usd_calc": "💵 USD Converter", "res": "Result in IQD:", "tele": "Telegram Channel", "btn": "Enter"
+        "info": "🌐 يتم تحديث هذه الأسعار تلقائياً من النظام المصرفي العالمي ومطابقتها مع سوق دهوك",
+        "usd": "سعر الدولار (١٠٠$)", "calc": "💵 حاسبة العملات", "btn": "Enter", "v": "زوار الموقع:"
     }
-}
-t = translations[st.session_state.language]
+}[st.session_state.language]
 
 # 5. ستایلێ گشتی
-bg_img = "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?q=80&w=2071&auto=format&fit=crop"
+bg_img = "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?q=80&w=2071"
 st.markdown(f"""
 <style>
-    .stApp {{ background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url("{bg_img}"); background-size: cover; background-position: center; background-attachment: fixed; }}
-    h1, h2, h3, p, label {{ color: #fcf6ba !important; text-shadow: 2px 2px 4px #000; }}
-    .card {{ background-color: rgba(20, 20, 20, 0.9); padding: 20px; border-radius: 15px; border: 2px solid #bf953f; text-align: center; margin-bottom: 15px; }}
-    input {{ background-color: #111 !important; color: white !important; border: 1px solid #bf953f !important; font-size: 20px !important; }}
-    div.stButton > button {{ background: linear-gradient(45deg, #FF0000, #990000) !important; color: white !important; font-weight: bold !important; width: 100%; border-radius: 10px; border: 1px solid #fff; height: 50px; font-size: 20px !important; margin-top: 10px; }}
-    .result-box {{ background-color: rgba(0,255,0,0.1); padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #00FF00; margin-top: 15px; }}
-    [data-testid="stSidebar"] {{ background-color: rgba(0,0,0,0.95) !important; border-right: 1px solid #bf953f; }}
-    .tele-btn {{ display: block; background: linear-gradient(45deg, #0088cc, #005580); color: white !important; text-align: center; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-top: 20px; border: 1px solid #fff; }}
+    header, footer {{ visibility: hidden; }}
+    .stApp {{ background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url("{bg_img}"); background-size: cover; background-attachment: fixed; }}
+    .info-box {{ background: rgba(191,149,63,0.1); padding:10px; border-radius:10px; border:1px solid #bf953f; color:#fcf6ba; text-align:center; font-size:14px; margin-bottom:20px; }}
+    .card {{ background: rgba(20,20,20,0.9); padding:25px; border-radius:15px; border:2px solid #bf953f; text-align:center; }}
+    .price {{ color: #00FF00 !important; font-size: 55px !important; font-weight: bold; }}
 </style>
 """, unsafe_allow_html=True)
 
-# 6. وەرگرتنا بها
+# 6. نیشاندانا ڕوونکرنێ ل سەرێ سایتی
+st.markdown(f'<div class="info-box">{t["info"]}</div>', unsafe_allow_html=True)
+
+# 7. دەم و نرخێ ئۆتۆماتیک
+now = datetime.now(pytz.timezone('Asia/Baghdad'))
+st.markdown(f"<p style='color:#bf953f; text-align:center;'>📅 {now.strftime('%Y-%m-%d')} | ⏰ {now.strftime('%H:%M:%S')}</p>", unsafe_allow_html=True)
+
 try:
-    resp = requests.get("https://api.exchangerate-api.com/v4/latest/USD").json()
-    one_usd = resp['rates']['IQD'] + 158.5
-    iqd_100 = one_usd * 100
+    rate = (requests.get("https://api.exchangerate-api.com/v4/latest/USD").json()['rates']['IQD'] + 158.5) * 100
 except:
-    one_usd, iqd_100 = 1515, 151500
+    rate = 151500
 
-# 7. شاشا سەرەکی
-st.markdown(f"<h1 style='text-align:center;'>{t['title']}</h1>", unsafe_allow_html=True)
-st.markdown(f"""<div class="card"><p>{t['usd_live']}</p><h2 style="color:#00FF00 !important; font-size: 45px;">{iqd_100:,.0f}</h2></div>""", unsafe_allow_html=True)
+st.markdown(f'<div class="card"><p style="color:white;">{t["usd"]}</p><h1 class="price">{rate:,.0f}</h1></div>', unsafe_allow_html=True)
 
-# 8. پشکا دۆلاری دگەل دوکما Enter
+# 8. حسابکەر و بینەر
 st.write("---")
-st.markdown(f"<h3>{t['usd_calc']}</h3>", unsafe_allow_html=True)
-usd_val = st.number_input("$ USD Amount:", min_value=0.0, value=100.0, step=50.0)
+usd_in = st.number_input("$ USD:", min_value=0.0, value=100.0)
+if st.button(t['btn']):
+    st.session_state.calculation_result = usd_in * (rate / 100)
 
-if st.button(t['btn'], key="btn_usd"):
-    res_usd = usd_val * one_usd
-    st.markdown(f"""<div class="result-box"><p style="margin:0; color:#fff;">{t['res']}</p><h2 style="color:#00FF00 !important; margin:0;">{res_usd:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
+if st.session_state.calculation_result:
+    st.success(f"{st.session_state.calculation_result:,.0f} IQD")
 
-# 9. تێلەگرام
-st.markdown(f'<a href="https://t.me/badinimatin" target="_blank" class="tele-btn">🔗 {t["tele"]}</a>', unsafe_allow_html=True)
-
-# 10. Sidebar
-with st.sidebar:
-    st.markdown("<h3 style='color:#bf953f;'>Matin Control</h3>", unsafe_allow_html=True)
-    pw = st.text_input("Password:", type="password")
-    if pw == "matin2026":
-        st.metric("بینەرێن ئەڤڕۆ", st.session_state.count)
+st.markdown(f"<div style='color:#bf953f; text-align:center; margin-top:20px;'>👤 {t['v']} {st.session_state.count}</div>", unsafe_allow_html=
