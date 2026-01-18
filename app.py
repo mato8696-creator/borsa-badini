@@ -8,20 +8,27 @@ st.set_page_config(page_title="بۆڕسا دهۆک - مەتین", page_icon="�
 # 2. نووکرنا ئۆتۆماتیک هەر 60 چرکەیان
 st_autorefresh(interval=60000, limit=100, key="fscounter")
 
-# 3. ژمارەکەرێ نهێنی (تنێ تو دێ بینی)
+# 3. سیستەمێ ژمارەکەرێ نهێنی
 if 'total_visits' not in st.session_state:
     st.session_state.total_visits = 0
 st.session_state.total_visits += 1
 
-# دروستکرنا پشکەکا ڤەشارتی ل لایێ چەپێ (Sidebar)
+# --- پشکا پاسۆردێ (تنێ بۆ مەتینی) ---
 with st.sidebar:
     st.title("🛠️ کۆنترۆلا مەتینی")
-    st.write("ئەڤ بەشە تنێ بۆ تە دیارە")
-    st.metric(label="ژمارا سەردانیکەران", value=st.session_state.total_visits)
+    # ل ڤێرە پاسۆردێ خۆ بنڤیسە دا ژمارێ ببینی
+    pass_input = st.text_input("پاسۆردێ بنڤیسە:", type="password")
+    
+    if pass_input == "matin2026": 
+        st.success("بەخێر بێی مەتین گیان")
+        st.metric(label="👁️ ژمارا سەردانیکەران", value=st.session_state.total_visits)
+    else:
+        if pass_input != "":
+            st.error("پاسۆرد خەلەتە!")
     st.write("---")
-    st.info("ئەگەر تو سایتێ خۆ Reboot بکەی، ئەڤ ژمارە دێ زێدە بیت.")
+    st.info("ئەڤ بەشە تنێ مەتین دشێت پاسۆردێ لێ بدەت.")
 
-# 4. ستایلێ گشتی (CSS)
+# 4. ستایلێ گشتی
 st.markdown("""
     <style>
     .stApp { background-color: #0e1117; }
@@ -34,7 +41,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 5. وەرگرتنا بها ژ ئینتەرنێتێ
+# 5. وەرگرتنا بها
 try:
     url = "https://api.exchangerate-api.com/v4/latest/USD"
     data = requests.get(url).json()
@@ -46,7 +53,7 @@ except:
     usd_to_try = 31.0
     usd_to_irr = 45000
 
-# 6. ناڤ و نیشان
+# 6. دیزاینێ سەرەکی
 st.markdown("""
     <div style="text-align: center; font-weight: bold; font-size: 50px;">
         <span style="background: linear-gradient(to right, #FF0000 33%, #FFD700 33%, #FFD700 66%, #008000 66%); 
@@ -61,7 +68,7 @@ st.markdown("""
 
 st.write("---")
 
-# 7. بەشێ حسابکرنا پارەی
+# 7. حسابکرنا پارەی
 currency_type = st.selectbox("دراڤەکێ هەلبژێرە:", ["دۆلار 💵", "لیرەیا تورکی 🇹🇷", "تمەنێ ئیرانی 🇮🇷"])
 col1, col2 = st.columns([3, 1])
 with col1:
@@ -77,16 +84,15 @@ elif "لیرەیا تورکی" in currency_type:
 else:
     result = (amount / usd_to_irr) * usd_to_iqd
 
-# 8. نیشاندانا ئەنجامی
 st.markdown(f"""
     <div style="background-color: rgba(0, 0, 0, 0.7); padding: 25px; border-radius: 15px; border: 2px solid #00FF00; text-align: center;">
         <h3 style="color: white; margin: 0;">ئەنجام ب دینار:</h3>
-        <h1 style="color: #00FF00; font-size: 50px; margin: 10px;">{result:,.0f}</h1>
+        <h1 style="color: #00FF00; font-size: 45px; margin: 10px;">{result:,.0f}</h1>
         <p style="color: #aaaaaa; margin: 0;">مەتین عدنان</p>
     </div>
 """, unsafe_allow_html=True)
 
-# 9. پشکا ڕیکلامێ (Monetization)
+# 8. پشکا ڕیکلامێ
 st.write("")
 st.markdown("""
     <div style="background-color: #1a1a1a; padding: 20px; border-radius: 15px; border: 2px dashed #FFD700; text-align: center;">
