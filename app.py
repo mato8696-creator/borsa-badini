@@ -1,53 +1,52 @@
 import streamlit as st
 import requests
 
-# ١. ڕێکخستنا سەرەکی
-st.set_page_config(page_title="بۆڕسادهوک", page_icon="💰")
+# 1. ڕێکخستنا لاپەڕەی
+st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="☀️")
 
-# ٢. وەرگرتنا بهایێ دۆلاری
+# 2. وەرگرتنا بها ب شێوەیەکێ سادە
 try:
     url = "https://api.exchangerate-api.com/v4/latest/USD"
     data = requests.get(url).json()
-    base_rate = data['rates']['IQD']
-    dhok_rate = base_rate + 158.5
+    dhok_rate = data['rates']['IQD'] + 158
 except:
-    dhok_rate = 1468.50
+    dhok_rate = 1468
 
-# ٣. ناڤ ونیشان
-st.markdown("<h1 style='text-align: center;'>💰 بۆڕسا دهوکچچگچ</h1>", unsafe_allow_html=True)
+# 3. ناڤێ دهۆک ب ڕەنگێن ئالایێ کوردستانێ
+st.markdown("""
+    <div style="text-align: center; font-weight: bold; font-size: 50px; line-height: 1.2;">
+        <span style="color: #FF0000;">د</span><span style="color: #FF0000;">هـ</span>
+        <span style="color: #FFD700;">ۆ</span>
+        <span style="color: #008000;">ک</span>
+    </div>
+    <div style="text-align: center; color: gray; font-size: 18px;">بۆڕسا مەتین عدنان</div>
+""", unsafe_allow_html=True)
+
 st.write("---")
 
-# ٤. خانەیا نڤیسینا دۆلاران دگەل ڕێنمایا ب کوردی
-st.markdown("### 💵 بڕێ دۆلاران بنڤیسە:")
-usd_input = st.number_input(
-    "Label", 
-    min_value=0.0, 
-    value=100.0, 
-    step=1.0, 
-    label_visibility="collapsed"
-)
+# 4. خانەیا دۆلاران و دوکما سۆر ل ڕەخ فە
+col1, col2 = st.columns([3, 1])
 
-# ل شوینا نڤیسینا ئینگلیزی، ئەڤێ ب کوردی د بن دا بنڤیسە:
-st.markdown("<p style='color: gray; font-size: 14px; text-align: right;'>💡 ل سەر کیبۆردێ کلیک ل 'Done' یان 'Enter' بکە</p>", unsafe_allow_html=True)
+with col1:
+    usd_amount = st.number_input("بڕێ دۆلاران بنڤیسە:", min_value=0.0, value=100.0, label_visibility="collapsed")
 
-# ٥. حسابکرنا ئەنجامی
-iqd_result = usd_input * dhok_rate
+with col2:
+    # دوکما حسابکرنێ ب ڕەنگێ سۆر
+    if st.button("حساب بکە", type="primary"):
+        pass # دەما کلیک لێ دهێتە کرن پەیج رێفرێش دبیت و حساب دکەت
 
-# ٦. نیشاندانا ئەنجامی ب ڕەنگێ کەسکێ گەش (وەک تە ڤیای)
+# 5. حسابکرن و نیشاندانا ئەنجامی
+iqd_result = usd_amount * dhok_rate
+
 st.write("---")
 st.markdown(f"""
-    <div style="text-align: center;">
-        <h3 style="color: white;">زانینا بهایی ب دینار:</h3>
-        <h1 style="color: #00FF00; font-size: 55px; font-weight: bold; text-shadow: 2px 2px 10px rgba(0,255,0,0.3);">
-            {iqd_result:,.0f}
-        </h1>
-        <p style="color: #00FF00; font-size: 20px;">دینارێن عیراقی</p>
+    <div style="background-color: #1e1e1e; padding: 20px; border-radius: 10px; border-left: 10px solid #008000; text-align: center;">
+        <h3 style="color: white; margin: 0;">ئەنجام ب دینار:</h3>
+        <h1 style="color: #00FF00; font-size: 45px; margin: 10px;">{iqd_result:,.0f}</h1>
+        <p style="color: white; margin: 0;">بهایێ ١٠٠$ ئەڤڕۆ: {dhok_rate * 100:,.0f}</p>
     </div>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-st.write("---")
-
-# ٧. دوکما تێلەگرامێ یا مەزن
-st.link_button("✈️ تێلەگرامێ من (Badini Matin)", "https://t.me/badinimatin", use_container_width=True)
-
-st.markdown("<p style='text-align: center; color: gray; margin-top: 20px;'>گەشەپێدەر: مەتین عدنان</p>", unsafe_allow_html=True)
+# 6. لینکا تێلەگرامێ
+st.write("")
+st.link_button("✈️ Telegram: Badini Matin", "https://t.me/badinimatin", use_container_width=True)
