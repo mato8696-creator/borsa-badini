@@ -1,17 +1,3 @@
-st.markdown("""
-<style>
-    /* 1. لادانا وێ نیشانا بچووک ل ڕەخ ناڤی دا خەلک کلیکێ لێ نەکەن */
-    .stApp a.header-anchor { display: none !important; }
-    
-    /* 2. ڤەشارتنا مێنۆیا سەرەکی و فووتەرێ ستریملیت دا سایت فەرمیتر ببیت */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-
-    /* 3. پاراستنا ستایلێ بینەران */
-    .stMetric { background-color: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 10px; }
-</style>
-""", unsafe_allow_html=True)
 import streamlit as st
 import requests
 from streamlit_autorefresh import st_autorefresh
@@ -83,3 +69,14 @@ with st.sidebar:
     pw = st.text_input("Password:", type="password")
     if pw == "matin2026":
         st.metric("بینەرێن ئەڤڕۆ", st.session_state.count)
+st.markdown("""
+<style>
+    /* ئەڤ کۆدە نیشانێن زێدە ل ڕەخ ناڤی لادەت */
+    .viewerBadge_link__1S137 { display: none !important; }
+    .stApp a.header-anchor { display: none !important; }
+    
+    /* پاراستنا پاقژیا سایتی */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
