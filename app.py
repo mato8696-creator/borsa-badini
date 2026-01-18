@@ -9,7 +9,7 @@ st.set_page_config(page_title="بۆڕسا دهۆک - پاراستی", page_icon=
 # ٢. وەرگرتنا دەمێ دروست یێ کوردستانێ
 iq_timezone = pytz.timezone('Asia/Baghdad')
 now = datetime.now(iq_timezone)
-# کۆد بو داخاز کرنی سەرەدانا تلیکرام بکە (بۆ نموونە: 0520)
+# کۆد دێ بیتە دەمژمێر و خولەک (بۆ نموونە: 0520)
 dynamic_password = now.strftime("%I%M") 
 
 # ٣. سیستەمێ پشکنینا کۆدی
@@ -27,16 +27,14 @@ if not st.session_state["authenticated"]:
     st.title("🔐 سیستەمێ پاراستنا مەتین")
     st.write(f"⏰ دەمێ نوکە ل دهۆکێ: {now.strftime('%I:%M %p')}")
     
-    st.text_input("کۆدێ نهێنی (بو دیتنا کودی سەرەدانا تلیگرام بکە) بنڤیسە:", type="password", key="password_input")
+    st.text_input("کۆدێ نهێنی (دەمژمێر و خولەک) بنڤیسە:", type="password", key="password_input")
     st.button("چوونەژوورێ", on_click=check_password)
-st.write("---")
-    st.link_button("✈️ Telegram", "https://t.me/badinimatin")    
     
     st.warning("تێبینی: ئەڤ کۆدە هەر خولەکەکێ دگوڕیت. پشتی تو دچیە ژوور، کەس نەشێت کۆدێ تە بکارببیت.")
     st.stop()
 
 # --- ل ڤێرە پڕۆژەیێ تە یێ سەرەکی دەستپێدەکەت ---
-st.title("💰 بۆڕسا  (دهۆک)")
+st.title("💰 بۆڕسا مەتین (دهۆک)")
 st.success("تە ب سەرکەفتی کۆدێ درست لێدا!")
 
 try:
