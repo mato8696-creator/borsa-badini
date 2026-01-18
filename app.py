@@ -76,4 +76,5 @@ if st.button(t['btn']):
 if st.session_state.calculation_result:
     st.success(f"{st.session_state.calculation_result:,.0f} IQD")
 
-st.markdown(f"<div style='color:#bf953f; text-align:center; margin-top:20px;'>👤 {t['v']} {st.session_state.count}</div>", unsafe_allow_html=
+st.markdown(f"<div style='color:#bf953f; text-align:center; margin-top:20px;'>👤 {t['v']} {st.session_state.count}</div>", unsafe_allow_html=True)
+st.markdown('<a href="https://t.me/badinimatin" target="_blank" style="display:block; background:#0088cc; color:white; text-align:center; padding:15px; border-radius:12px; text-decoration:none; font-weight:bold; margin-top:10px;">✈️ Telegram Channel</a>', unsafe_allow_html=True)
