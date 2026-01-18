@@ -4,46 +4,29 @@ import requests
 # ١. ڕێکخستنا لاپەڕەی
 st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="📊")
 
-st.title("📊 سیستەمێ بۆڕسا دهۆک (مەتین عدنان)")
-st.write("بخێر بێی! هەنگاڤا خۆ هەلبژێرە:")
+st.title("📊 بۆڕسا مەتین - هەنگاڤ ب هەنگاڤ")
 
-# ٢. وەرگرتنا بهایێ نوو
+# ٢. وەرگرتنا بهایێ دۆلاری
 try:
     url = "https://api.exchangerate-api.com/v4/latest/USD"
     data = requests.get(url).json()
     base_rate = data['rates']['IQD']
-    dhok_rate = base_rate + 157.5 # بهایێ بازارێ دهۆکێ
+    dhok_rate = base_rate + 157.5 # بهایێ نێزیکی دهۆکێ (1467.50)
 except:
-    dhok_rate = 1467.50 # بهایێ پشتیگری ئەگەر ئینتەرنێت نەبوو
+    dhok_rate = 1467.50 
 
-# ٣. هەنگاڤا ئێکێ: هەلبژارتنا کارێ سەرەکی
-step1 = st.radio(
-    "١. چ تە دڤێت بکەی؟",
-    ["بینینا بهایێ ئەڤڕۆ", "حاسیبەیێ دۆلاری (بۆ دیناری)"]
-)
+# ٣. هەنگاڤا ١: هەلبژارتنا جورێ کارەکێ
+st.markdown("### ١. چ تە دڤێت بکەی؟")
+choice = st.radio("", ["بینینا بهایێ گشتی", "حاسیبەیێ پارەی (دۆلار بۆ دینار)"], label_visibility="collapsed")
 
 st.write("---")
 
-# ٤. جێبەجێکرنا بڕیارێ
-if step1 == "بینینا بهایێ ئەڤڕۆ":
-    st.subheader("بهایێ نوکە ل بازارێ دهۆکێ:")
-    st.info(f"💵 100 دۆلار = {dhok_rate * 100:,.0f} دینار")
-    st.metric(label="بهایێ ١ دۆلاری", value=f"{dhok_rate:,.2f} IQD")
+# ٤. جێبەجێکرنا هەنگاڤا ٢
+if choice == "بینینا بهایێ گشتی":
+    st.subheader("بهایێ دۆلاری ل بازارێ دهۆکێ:")
+    col1, col2 = st.columns(2)
+    col1.metric("بهایێ ١ دۆلار", f"{dhok_rate:,.0f} IQD")
+    col2.metric("بهایێ ١٠٠ دۆلار", f"{dhok_rate * 100:,.0f} IQD")
 
-elif step1 == "حاسیبەیێ دۆلاری (بۆ دیناری)":
-    st.subheader("🧮 حاسیبەیێ دهۆکێ")
-    
-    # هەنگاڤا دووێ: دەستنیشانکرنا بڕی
-    option = st.selectbox("٢. بڕێ پارەی هەلبژێرە:", ["100 دۆلار", "بڕەکێ دی بنڤیسە"])
-    
-    if option == "100 دۆلار":
-        usd_amount = 100.0
-    else:
-        usd_amount = st.number_input("بڕێ دۆلاران بنڤیسە:", min_value=1.0, value=100.0)
-    
-    # هەنگاڤا سێیێ: نیشاندانا ئەنجامی
-    total_iqd = usd_amount * dhok_rate
-    st.success(f"✅ ئەنجام: {usd_amount:,} دۆلار دبیتە **{total_iqd:,.0f}** دینار")
-
-st.write("---")
-st.link_button("✈️ پەیوەندی ب تێلەگرامێ", "https://t.me/badinimatin")
+else:
+    st.subheader("٢. بڕێ
