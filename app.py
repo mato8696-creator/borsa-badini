@@ -1,40 +1,39 @@
 import streamlit as st
 import requests
 
-st.set_page_config(page_title="بۆڕسا مەتین", page_icon="💰")
+st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="💰")
 
-st.title("💰 بۆڕسا بادینی (ئۆتۆماتیک)")
-st.subheader("بهایێ دۆلاری ل بازارێ ئازاد یێ عیراقێ")
+st.title("💰 بۆڕسا مەتین (دهۆک)")
+st.subheader("بهایێ دۆلاری ل بازارێ دهۆکێ ب شێوەیەکێ ئۆتۆماتیک")
 
 st.write("---")
 st.markdown("### 👤 گەشەپێدەر: مەتین عدنان محمد")
 st.link_button("✈️ ناردنا نامەیێ ب تێلەگرامێ", "https://t.me/badinimatin")
 st.write("---")
 
-# وەرگرتنا داتایان ژ سایتێ جیهانی یێ Google Finance یان یێ هاوشێوە
 try:
-    # ئەڤ لینکە بهایێ بازارێ ئازاد (نە یێ فەرمی) یێ عیراقێ نیشان ددەت
+    # وەرگرتنا بهایێ فەرمی ژ API
     url = "https://api.exchangerate-api.com/v4/latest/USD"
     data = requests.get(url).json()
+    base_rate = data['rates']['IQD']
     
-    # د جیهانێ دا هندەک جاران بهایێ بازارێ ڕەش داتایێن جودا ددەت
-    # ئەگەر بهایێ فەرمی ١٣١٠ بیت، ئەم دشێین ب شێوەیەکێ بیرکاری (Math) نێزیکی بازارێ خۆ بکەین
-    # یان ژی داتایێن دروستتر وەربگرین
-    iqd_rate = data['rates']['IQD']
+    # مە بهایێ دهۆکێ یێ ئۆتۆماتیک دروست کر (فەرمی + ١٥٧.٥ دینار)
+    # ئەڤە دێ بهایێ ١٣١٠ کەتە نێزیکی ١٤٦،٧٥٠
+    dhok_rate = base_rate + 157.5
     
-    # نیشاندانا بهایێ ئۆتۆماتیک
-    st.metric(label="بهایێ ١ دۆلاری (ئۆتۆماتیک)", value=f"{iqd_rate:,} IQD")
+    # نیشاندانا ئەنجامی
+    st.metric(label="بهایێ ١ دۆلاری ل دهۆکێ (نێزیکەیی)", value=f"{dhok_rate:,.2f} IQD")
     
     st.write("---")
     
-    # حاسیبەیێ ئۆتۆماتیک
-    st.markdown("### 🧮 حاسیبەیێ گوهۆڕینێ")
-    amount_usd = st.number_input("ژمارەیا دۆلاران بنڤیسە:", value=100.0)
+    # حاسیبەیێ ١٠٠ دۆلاری ب تایبەت
+    st.markdown("### 🧮 حاسیبەیێ بازارێ دهۆکێ")
+    amount = st.number_input("چەند دۆلار تە هەنە؟", value=100.0)
+    total = amount * dhok_rate
     
-    total_iqd = amount_usd * iqd_rate
-    st.success(f"بهایێ {amount_usd:,} دۆلاران دبیتە: **{total_iqd:,.0f}** دینار")
+    st.success(f"بهایێ {amount:,} دۆلاران ب دینارێ دهۆکێ: **{total:,.0f}** دینار")
 
 except:
-    st.error("کێشەیەک د ئینتەرنێتێ دا هەیە!")
+    st.error("پەیوەندی ب سێرڤەری ڤە نەما!")
 
-st.info("ئەڤ بهایە ئۆتۆماتیک دهێتە نووکرن، لێ هندەک جاران ژ بازارێ کەفالی یێ عیراقێ جودایە.")
+st.info("تێبینی: ئەڤ بهایە ب شێوەیەکێ زیرەک دهێتە خەملاندن دا وەکی بازارێ دهۆکێ بیت.")
