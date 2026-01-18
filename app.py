@@ -31,20 +31,20 @@ if st.session_state.language is None:
 translations = {
     "Kurdish": {
         "title": "بۆڕسا دهۆک یا جیهانی", "usd_live": "بهایێ دۆلاری (١٠٠$)", "gold_live": "بهایێ زێڕی (٢١)", 
-        "usd_calc": "💵 گوهۆڕینا دۆلاری (ئۆتۆماتیکی)", "gold_calc": "⚖️ حسابکرنا زێڕی (غرام)", "res": "ئەنجام ب دینار:", "tele": "کەنالێ تێلەگرامی"
+        "usd_calc": "💵 گوهۆڕینا دۆلاری", "gold_calc": "⚖️ حسابکرنا زێڕی (غرام)", "res": "ئەنجام ب دینار:", "tele": "کەنالێ تێلەگرامی", "btn": "Enter"
     },
     "Arabic": {
         "title": "بورصة دهوك العالمية", "usd_live": "سعر الدولار (١٠٠$)", "gold_live": "سعر الذهب (٢١)", 
-        "usd_calc": "💵 تحويل الدولار (تلقائي)", "gold_calc": "⚖️ حساب الذهب (غرام)", "res": "النتيجة بالدينار:", "tele": "قناة التيليجرام"
+        "usd_calc": "💵 تحويل الدولار", "gold_calc": "⚖️ حساب الذهب (غرام)", "res": "النتيجة بالدينار:", "tele": "قناة التيليجرام", "btn": "Enter"
     },
     "English": {
         "title": "Duhok Global Borsa", "usd_live": "USD Rate (100$)", "gold_live": "Gold Rate (21K)", 
-        "usd_calc": "💵 Live USD Converter", "gold_calc": "⚖️ Live Gold Calculator", "res": "Result in IQD:", "tele": "Telegram Channel"
+        "usd_calc": "💵 USD Converter", "gold_calc": "⚖️ Gold Calculator", "res": "Result in IQD:", "tele": "Telegram Channel", "btn": "Enter"
     }
 }
 t = translations[st.session_state.language]
 
-# 5. ستایلێ گشتی
+# 5. ستایلێ گشتی و دوکمێن سۆر
 bg_img = "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?q=80&w=2071&auto=format&fit=crop"
 st.markdown(f"""
 <style>
@@ -52,22 +52,21 @@ st.markdown(f"""
     h1, h2, h3, p, label {{ color: #fcf6ba !important; text-shadow: 2px 2px 4px #000; }}
     .card {{ background-color: rgba(20, 20, 20, 0.9); padding: 20px; border-radius: 15px; border: 1px solid #bf953f; text-align: center; margin-bottom: 15px; }}
     input {{ background-color: #111 !important; color: white !important; border: 1px solid #bf953f !important; font-size: 20px !important; }}
-    .result-box {{ background-color: rgba(0,255,0,0.1); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #00FF00; margin-top: 10px; }}
+    
+    /* دوکما Enter یا سۆر */
+    div.stButton > button {{ 
+        background: linear-gradient(45deg, #FF0000, #990000) !important; 
+        color: white !important; font-weight: bold !important; width: 100%; 
+        border-radius: 10px; border: 1px solid #fff; height: 50px; font-size: 20px !important;
+        margin-top: 10px;
+    }}
+    
+    .result-box {{ background-color: rgba(0,255,0,0.1); padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #00FF00; margin-top: 15px; }}
     [data-testid="stSidebar"] {{ background-color: rgba(0,0,0,0.95) !important; border-right: 1px solid #bf953f; }}
     
-    /* ستایلێ دوکما تێلەگرامێ */
     .tele-btn {{
-        display: block;
-        background: linear-gradient(45deg, #0088cc, #005580);
-        color: white !important;
-        text-align: center;
-        padding: 15px;
-        border-radius: 12px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 18px;
-        margin-top: 20px;
-        border: 1px solid #fff;
+        display: block; background: linear-gradient(45deg, #0088cc, #005580); color: white !important;
+        text-align: center; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-top: 20px; border: 1px solid #fff;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -88,24 +87,26 @@ c1, c2 = st.columns(2)
 with c1: st.markdown(f"""<div class="card"><p>{t['usd_live']}</p><h2 style="color:#00FF00 !important;">{iqd_100:,.0f}</h2></div>""", unsafe_allow_html=True)
 with c2: st.markdown(f"""<div class="card"><p>{t['gold_live']}</p><h2 style="color:#00FF00 !important;">{gold_mithqal:,.0f}</h2></div>""", unsafe_allow_html=True)
 
-# 8. پشکا دۆلاری (ئۆتۆماتیکی)
+# 8. پشکا دۆلاری + دوکما Enter
 st.write("---")
 st.markdown(f"<h3>{t['usd_calc']}</h3>", unsafe_allow_html=True)
 usd_val = st.number_input("$ USD Amount:", min_value=0.0, value=100.0, step=50.0)
-result_usd = usd_val * one_usd
-st.markdown(f"""<div class="result-box"><p style="margin:0; color:#fff;">{t['res']}</p>
-<h2 style="color:#00FF00 !important; margin:0;">{result_usd:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
+if st.button(t['btn'], key="btn_usd") or usd_val:
+    result_usd = usd_val * one_usd
+    st.markdown(f"""<div class="result-box"><p style="margin:0; color:#fff;">{t['res']}</p>
+    <h2 style="color:#00FF00 !important; margin:0;">{result_usd:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
 
-# 9. پشکا زێڕی (ئۆتۆماتیکی)
+# 9. پشکا زێڕی + دوکما Enter
 st.write("---")
 st.markdown(f"<h3>{t['gold_calc']}</h3>", unsafe_allow_html=True)
 gold_val = st.number_input("Gram:", min_value=0.0, value=26.0, step=1.0)
-result_gold = gold_val * gold_gram
-st.markdown(f"""<div style="background-color:rgba(255,255,255,0.1); padding:15px; border-radius:10px; text-align:center; border:1px solid #bf953f;">
-<p style="margin:0; color:#fff;">{t['res']}</p>
-<h2 style="color:#fcf6ba !important; margin:0;">{result_gold:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
+if st.button(t['btn'], key="btn_gold") or gold_val:
+    result_gold = gold_val * gold_gram
+    st.markdown(f"""<div style="background-color:rgba(255,255,255,0.1); padding:15px; border-radius:10px; text-align:center; border:2px solid #bf953f; margin-top:15px;">
+    <p style="margin:0; color:#fff;">{t['res']}</p>
+    <h2 style="color:#fcf6ba !important; margin:0;">{result_gold:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
 
-# 10. لایێ تێلەگرامێ (ئەوا تە دڤیا بزڤریت)
+# 10. تێلەگرام
 st.markdown(f'<a href="https://t.me/badinimatin" target="_blank" class="tele-btn">🔗 {t["tele"]}</a>', unsafe_allow_html=True)
 
 # 11. Sidebar
