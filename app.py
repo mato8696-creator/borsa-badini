@@ -21,4 +21,4 @@ st.markdown("### 👤 گەشەپێدەرێ بەرنامەی:")
 st.success("مەتین عدنان محمد: د گەل هەوەیە")
 st.write("---")
 st.write("بو هەر پسیارەکا تە هەبیت لینکی تلیگرام مە بەردەستە ژ بو گفتو گویئ ")
-st.link_button https://t.me/badinimatin
+"https://t.me/badinimatin")
