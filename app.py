@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # ١. ڕێکخستنا سەرەکی
-st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="💰")
+st.set_page_config(page_title="بۆڕسادهوک", page_icon="💰")
 
 # ٢. وەرگرتنا بهایێ دۆلاری
 try:
