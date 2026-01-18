@@ -1,32 +1,37 @@
 import streamlit as st
 import requests
-import time
 
 # 1. ڕێکخستنا لاپەڕەی
 st.set_page_config(page_title="بۆڕسا مەتین", page_icon="💰")
 
-# 2. درستکرنا ستایلێ لڤینێ (CSS)
+# 2. ستایلێ لڤینێ و دوکما سۆر (CSS)
 st.markdown("""
     <style>
-    /* ئەڤ بەشە دێ پاشبنەمایێ گوهۆڕیت */
     .stApp {
-        background-image: url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
         background-color: #0e1117;
     }
-    
-    /* ئەنیمەیشنا دۆلارێن لڤۆک */
-    @keyframes dollarMove {
-        from { transform: translateY(0px); }
-        to { transform: translateY(-20px); }
+    /* ستایلێ دوکما سۆر */
+    div.stButton > button {
+        background-color: #FF0000 !important;
+        color: white !important;
+        width: 100%;
+        height: 45px;
+        border-radius: 10px;
+        font-weight: bold;
+        border: none;
     }
-    
+    /* ئەنیمەیشنا دۆلارێن لڤۆک ل پشت نڤیسینێ */
+    @keyframes dollarMove {
+        from { transform: translateY(0px); opacity: 0.1; }
+        to { transform: translateY(-20px); opacity: 0.4; }
+    }
     .floating-dollar {
         display: inline-block;
         color: #00FF00;
-        font-size: 30px;
+        font-size: 25px;
         animation: dollarMove 2s ease-in-out infinite alternate;
-        opacity: 0.3;
         position: absolute;
+        z-index: 0;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -45,29 +50,34 @@ except:
 
 # 4. ناڤێ دهۆک ب ڕەنگێن ئالایێ کوردستانێ
 st.markdown("""
-    <div style="text-align: center; font-weight: bold; font-size: 55px; margin-bottom: 0px;">
+    <div style="text-align: center; font-weight: bold; font-size: 55px; position: relative; z-index: 1;">
         <span style="background: linear-gradient(to right, #FF0000 33%, #FFD700 33%, #FFD700 66%, #008000 66%); 
                      -webkit-background-clip: text; 
                      -webkit-text-fill-color: transparent;">
             دهۆک
         </span>
     </div>
-    <div style="text-align: center; color: #00FF00; font-size: 20px; font-weight: bold;">
-        💵 زانینا بهایێ دراڤان ل دهۆک 💵
+    <div style="text-align: center; color: #00FF00; font-size: 18px; font-weight: bold; position: relative; z-index: 1;">
+        زانینا بهایێ دراڤان ل دهۆک 📈
     </div>
 """, unsafe_allow_html=True)
 
 st.write("---")
 
-# 5. نیشانێن دۆلاری یێن لڤۆک ل ڕەخ و دوورێن پەیجێ
-st.markdown('<div class="floating-dollar" style="left:5%; top:10%;"> $ </div>', unsafe_allow_html=True)
-st.markdown('<div class="floating-dollar" style="right:10%; top:20%;"> $ </div>', unsafe_allow_html=True)
-st.markdown('<div class="floating-dollar" style="left:15%; top:50%;"> $ </div>', unsafe_allow_html=True)
-st.markdown('<div class="floating-dollar" style="right:5%; top:70%;"> $ </div>', unsafe_allow_html=True)
+# 5. نیشانێن دۆلاری یێن لڤۆک
+st.markdown('<div class="floating-dollar" style="left:5%; top:15%;"> $ </div>', unsafe_allow_html=True)
+st.markdown('<div class="floating-dollar" style="right:10%; top:25%;"> $ </div>', unsafe_allow_html=True)
 
-# 6. پشکا حسابکرنێ
+# 6. بەشێ هەلبژارتن و خانەیا نڤیسینێ دگەل دوکما سۆر
 currency_type = st.selectbox("دراڤەکێ هەلبژێرە:", ["دۆلار 💵", "لیرەیا تورکی 🇹🇷", "تمەنێ ئیرانی 🇮🇷"])
-amount = st.number_input("بڕێ پارەی بنڤیسە:", min_value=0.0, value=100.0)
+
+col1, col2 = st.columns([3, 1])
+with col1:
+    amount = st.number_input("بڕێ پارەی بنڤیسە:", min_value=0.0, value=100.0, label_visibility="collapsed")
+with col2:
+    # دوکما سۆر ئەوا تە دڤیا
+    if st.button("Enter"):
+        pass
 
 # 7. حسابکرنا ئەنجامی
 if "دۆلار" in currency_type:
@@ -77,13 +87,13 @@ elif "لیرەیا تورکی" in currency_type:
 else:
     result = (amount / usd_to_irr) * usd_to_iqd
 
-# 8. نیشاندانا ئەنجامی د چوارچۆڤەیەکێ گەش دا
+# 8. ئەنجامێ جوان
 st.write("")
 st.markdown(f"""
-    <div style="background-color: rgba(0, 0, 0, 0.6); padding: 30px; border-radius: 20px; border: 3px solid #00FF00; text-align: center; box-shadow: 0px 0px 20px #00FF00;">
+    <div style="background-color: rgba(0, 0, 0, 0.7); padding: 25px; border-radius: 15px; border: 2px solid #00FF00; text-align: center; position: relative; z-index: 1;">
         <h3 style="color: white; margin: 0;">ئەنجام ب دینار:</h3>
-        <h1 style="color: #00FF00; font-size: 55px; margin: 10px;">{result:,.0f}</h1>
-        <p style="color: #00FF00; font-weight: bold;">مەتین عدنان</p>
+        <h1 style="color: #00FF00; font-size: 50px; margin: 10px;">{result:,.0f}</h1>
+        <p style="color: #aaaaaa; margin: 0;">مەتین عدنان</p>
     </div>
 """, unsafe_allow_html=True)
 
