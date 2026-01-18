@@ -1,59 +1,52 @@
 import streamlit as st
 import requests
-from datetime import datetime
-import pytz # بۆ ڕێکخستنا دەمێ کوردستانێ
 
 # ١. ڕێکخستنا لاپەڕەی
-st.set_page_config(page_title="بۆڕسا دهۆک - پاراستی", page_icon="🔐")
+st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="💰")
 
-# ٢. وەرگرتنا دەمێ دروست یێ کوردستانێ
-iq_timezone = pytz.timezone('Asia/Baghdad')
-now = datetime.now(iq_timezone)
-# کۆد دێ بیتە دەمژمێر و خولەک (بۆ نموونە: 0520)
-dynamic_password = now.strftime("%I%M") 
-
-# ٣. سیستەمێ پشکنینا کۆدی
+# ٢. سیستەمێ پاراستنێ (بۆ هەتا هەتایێ پشتی جارا ئێکێ)
+# مە "sidebar" بکارئینا دا کو شاشا سەرەکی تێک نەچیت
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
-def check_password():
-    if st.session_state["password_input"] == dynamic_password:
-        st.session_state["authenticated"] = True
-    else:
-        st.error(f"❌ کۆد خەلەتە! کۆدێ ڤێ خولەکێ بکاربینە.")
+# ئەگەر تە ڤیا کۆدی بگوهۆڕی، ئەڤ "1234" بگوهۆڕە
+correct_password = "1234"
 
-# شاشا چوونەژوورێ (Login Screen)
 if not st.session_state["authenticated"]:
-    st.title("🔐 سیستەمێ پاراستنا مەتین")
-    st.write(f"⏰ دەمێ نوکە ل دهۆکێ: {now.strftime('%I:%M %p')}")
-    
-    st.text_input("کۆدێ نهێنی (دەمژمێر و خولەک) بنڤیسە:", type="password", key="password_input")
-    st.button("چوونەژوورێ", on_click=check_password)
-    
-    st.warning("تێبینی: ئەڤ کۆدە هەر خولەکەکێ دگوڕیت. پشتی تو دچیە ژوور، کەس نەشێت کۆدێ تە بکارببیت.")
+    st.title("🔐 چوونەژوورێ بۆ بۆڕسا دهۆک")
+    password_input = st.text_input("کۆدێ نهێنی لێ بدە:", type="password")
+    if st.button("پەیوەست بوون"):
+        if password_input == correct_password:
+            st.session_state["authenticated"] = True
+            st.rerun()
+        else:
+            st.error("کۆد خەلەتە!")
     st.stop()
 
-# --- ل ڤێرە پڕۆژەیێ تە یێ سەرەکی دەستپێدەکەت ---
+# --- پشتی لێدانا کۆدی، ئەڤ بەشێ خوارێ دێ هەردەم یێ ڤەکری بیت ---
+
 st.title("💰 بۆڕسا مەتین (دهۆک)")
-st.success("تە ب سەرکەفتی کۆدێ درست لێدا!")
+st.success("سایتی ب سەرکەفتی کار کر")
 
 try:
-    # وەرگرتنا بهایی و زێدەکرنا فەرقییا دهۆکێ
+    # وەرگرتنا بهایێ دۆلاری
     url = "https://api.exchangerate-api.com/v4/latest/USD"
     data = requests.get(url).json()
     base_rate = data['rates']['IQD']
-    dhok_rate = base_rate + 157.5 # دا نێزیکی ١٤٦،٧٥٠ بیت
     
-    st.metric(label="بهایێ ١ دۆلاری ل دهۆکێ", value=f"{dhok_rate:,.2f} IQD")
+    # ڕێکخستنا بهایی بۆ بازارێ دهۆکێ (١٤٦،٧٥٠)
+    dhok_rate = base_rate + 157.5
+    
+    st.metric(label="بهایێ ١ دۆلاری (ئەڤڕۆ)", value=f"{dhok_rate:,.2f} IQD")
     
     st.write("---")
-    st.markdown("### 🧮 حاسیبەیێ بازارێ دهۆکێ")
+    st.markdown("### 🧮 حاسیبەیێ گوهۆڕینێ")
     amount = st.number_input("چەند دۆلار تە هەنە؟", value=100.0)
     total = amount * dhok_rate
-    st.info(f"بهایێ {amount:,} دۆلاران دبیتە: {total:,.0f} دینار")
+    st.info(f"بهایێ {amount:,} دۆلاران دبیتە: **{total:,.0f}** دینار")
     
     st.write("---")
-    st.link_button("✈️ Telegram", "https://t.me/badinimatin")
+    st.link_button("✈️ ناردنا نامەیێ (Telegram)", "https://t.me/badinimatin")
 
 except:
-    st.error("کێشەک د ئینتەرنێتێ دا هەیە!")
+    st.error("کێشەک هەبوو!")
