@@ -1,49 +1,49 @@
 import streamlit as st
 import requests
-from datetime import datetime
-import pytz
-import time
 
-# ١. ڕێکخستنا سەرەکی
-st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="💰")
+# ١. ڕێکخستنا لاپەڕەی
+st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="📊")
 
-# ٢. وەرگرتنا دەمێ دروست یێ دهۆکێ
-iq_timezone = pytz.timezone('Asia/Baghdad')
-now = datetime.now(iq_timezone)
+st.title("📊 سیستەمێ بۆڕسا دهۆک (مەتین عدنان)")
+st.write("بخێر بێی! هەنگاڤا خۆ هەلبژێرە:")
 
-# ٣. نیشاندانا دەمژمێرێ ب شێوەیەکێ مەزن و دیار
-st.markdown(f"""
-    <div style="background-color: #1e1e1e; padding: 15px; border-radius: 10px; border: 2px solid #00ff00; text-align: center;">
-        <h1 style="color: #00ff00; margin: 0; font-family: monospace;">⏰ {now.strftime('%I:%M:%S %p')}</h1>
-        <p style="color: white; margin: 0;">{now.strftime('%Y-%m-%d')}</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-# ٤. ناڤ و پەیوەندی
-st.title("💰 بۆڕسا  (دهۆک)")
-st.markdown(f"### 👤 گەشەپێدەر: مەتین عدنان محمد")
-st.link_button("✈️ Telegram", "https://t.me/badinimatin")
-st.write("---")
-
-# ٥. وەرگرتنا بهایێ دۆلاری
+# ٢. وەرگرتنا بهایێ نوو
 try:
     url = "https://api.exchangerate-api.com/v4/latest/USD"
     data = requests.get(url).json()
     base_rate = data['rates']['IQD']
-    dhok_rate = base_rate + 157.5 # نێزیکی ١٤٦،٧٥٠
-    
-    st.metric(label="بهایێ ١ دۆلاری ل دهۆکێ", value=f"{dhok_rate:,.2f} IQD")
-    
-    st.write("---")
-    st.markdown("### 🧮 حاسیبەیێ بازارێ دهۆکێ")
-    amount = st.number_input("چەند دۆلار تە هەنە؟", value=100.0)
-    total_iqd = amount * dhok_rate
-    st.success(f"بهایێ {amount:,} دۆلاران دبیتە: **{total_iqd:,.0f}** دینار")
-
+    dhok_rate = base_rate + 157.5 # بهایێ بازارێ دهۆکێ
 except:
-    st.error("کێشەک هەبوو!")
+    dhok_rate = 1467.50 # بهایێ پشتیگری ئەگەر ئینتەرنێت نەبوو
 
-# ٦. فێڵەکا زەریف بۆ نووکرنا دەمژمێرێ (Refresh)
-# ئەڤە دێ هەر ١٠ چرکەیان جارەکێ سایتێ تە نوو کەت دا دەمژمێر نەڕاوەستیت
-time.sleep(10)
-st.rerun()
+# ٣. هەنگاڤا ئێکێ: هەلبژارتنا کارێ سەرەکی
+step1 = st.radio(
+    "١. چ تە دڤێت بکەی؟",
+    ["بینینا بهایێ ئەڤڕۆ", "حاسیبەیێ دۆلاری (بۆ دیناری)"]
+)
+
+st.write("---")
+
+# ٤. جێبەجێکرنا بڕیارێ
+if step1 == "بینینا بهایێ ئەڤڕۆ":
+    st.subheader("بهایێ نوکە ل بازارێ دهۆکێ:")
+    st.info(f"💵 100 دۆلار = {dhok_rate * 100:,.0f} دینار")
+    st.metric(label="بهایێ ١ دۆلاری", value=f"{dhok_rate:,.2f} IQD")
+
+elif step1 == "حاسیبەیێ دۆلاری (بۆ دیناری)":
+    st.subheader("🧮 حاسیبەیێ دهۆکێ")
+    
+    # هەنگاڤا دووێ: دەستنیشانکرنا بڕی
+    option = st.selectbox("٢. بڕێ پارەی هەلبژێرە:", ["100 دۆلار", "بڕەکێ دی بنڤیسە"])
+    
+    if option == "100 دۆلار":
+        usd_amount = 100.0
+    else:
+        usd_amount = st.number_input("بڕێ دۆلاران بنڤیسە:", min_value=1.0, value=100.0)
+    
+    # هەنگاڤا سێیێ: نیشاندانا ئەنجامی
+    total_iqd = usd_amount * dhok_rate
+    st.success(f"✅ ئەنجام: {usd_amount:,} دۆلار دبیتە **{total_iqd:,.0f}** دینار")
+
+st.write("---")
+st.link_button("✈️ پەیوەندی ب تێلەگرامێ", "https://t.me/badinimatin")
