@@ -2,69 +2,47 @@ import streamlit as st
 import requests
 from streamlit_autorefresh import st_autorefresh
 
-# 1. ڕێکخستنا لاپەڕەی
+# 1. ڕێکخستن
 st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="💵", layout="centered")
 st_autorefresh(interval=60000, limit=100, key="fscounter")
 
-# 2. زمان و ژمارەکەر (وەک د وێنەیێ تە دا 1760)
+# 2. زمان و ژمارەکەر
 if 'language' not in st.session_state: st.session_state.language = None
 if 'count' not in st.session_state: st.session_state.count = 1760 
 st.session_state.count += 1
 
-# 3. ستایلێ پڕۆفیشناڵ و لادانا نیشانا 🔗
-bg_url = "https://images.unsplash.com/photo-1611974714658-058e11ee5d46?q=80&w=2070"
-st.markdown(f"""
-<style>
-    /* لادانا نیشانا 🔗 و پاقژکرنا سایتی */
-    .stApp a.header-anchor {{ display: none !important; }}
-    header, #MainMenu, footer {{ visibility: hidden; }}
-
-    .stApp {{
-        background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url("{bg_url}");
-        background-size: cover;
-        background-position: center;
-    }}
-    
-    h1, h2, h3, p, label {{ color: #fcf6ba !important; text-align: center; }}
-    
-    .card {{
-        background: rgba(30, 30, 30, 0.9);
-        padding: 20px;
-        border-radius: 15px;
-        border: 2px solid #bf953f;
-        margin-bottom: 15px;
-    }}
-    
-    .wa-btn {{
-        display: block;
-        background: linear-gradient(45deg, #25D366, #128C7E);
-        color: white !important;
-        text-align: center;
-        padding: 15px;
-        border-radius: 10px;
-        text-decoration: none;
-        font-weight: bold;
-        border: 1px solid #fff;
-    }}
-</style>
-""", unsafe_allow_html=True)
-
-# 4. لاپەڕێ زمانان (وەک د وێنەیێ تە دا)
+# 3. لاپەڕێ هەلبژارتنا زمان (وەک د وێنەیێ تە دا)
 if st.session_state.language is None:
-    st.markdown("<br><h1>بۆڕسا دهۆک | Duhok Borsa</h1>", unsafe_allow_html=True)
-    if st.button("کوردی ☀️"): st.session_state.language = "Kurdish"; st.rerun()
-    if st.button("العربية 🇮🇶"): st.session_state.language = "Arabic"; st.rerun()
-    if st.button("English 🇺🇸"): st.session_state.language = "English"; st.rerun()
+    st.markdown("<h2 style='text-align:center; color:#bf953f;'>Duhok Borsa | بۆڕسا دهۆک</h2>", unsafe_allow_html=True)
+    if st.button("کوردی ☀️"): 
+        st.session_state.language = "Kurdish"
+        st.rerun()
+    if st.button("العربية 🇮🇶"): 
+        st.session_state.language = "Arabic"
+        st.rerun()
+    if st.button("English 🇺🇸"): 
+        st.session_state.language = "English"
+        st.rerun()
     st.stop()
 
-# 5. وەرگێڕان
+# 4. وەرگێڕان
 t = {
-    "Kurdish": {"title": "بۆڕسا دهۆک یا جیهانی", "usd": "بهایێ دۆلاری (١٠٠$)", "gold": "بهایێ زێڕی (٢١)", "wa": "پەیوەندی ب واتسئاپێ"},
-    "Arabic": {"title": "بورصة دهوك العالمية", "usd": "سعر الدولار (١٠٠$)", "gold": "سعر الذهب (٢١)", "wa": "تواصل عبر الواتساب"},
-    "English": {"title": "Duhok Global Borsa", "usd": "USD Rate (100$)", "gold": "Gold Rate (21K)", "wa": "Contact via WhatsApp"}
+    "Kurdish": {"title": "بۆڕسا دهۆک", "usd": "بهایێ دۆلاری (١٠٠$)", "calc": "گوهۆڕینا دۆلاری", "res": "ئەنجام ب دینار:", "btn": "Enter"},
+    "Arabic": {"title": "بورصة دهوك", "usd": "سعر الدولار (١٠٠$)", "calc": "تحويل الدولار", "res": "النتيجة بالدينار:", "btn": "Enter"},
+    "English": {"title": "Duhok Borsa", "usd": "USD Rate (100$)", "calc": "USD Converter", "res": "Result in IQD:", "btn": "Enter"}
 }[st.session_state.language]
 
-# 6. وەرگرتنا نرخ
+# 5. ستایل
+st.markdown("""<style> .stApp { background-color: #000; } h1, h2, h3, p, label { color: #bf953f !important; } 
+div.stButton > button { background-color: #FF0000 !important; color: white !important; width: 100%; border-radius: 10px; } </style>""", unsafe_allow_html=True)
+
+# 6. پشکا سپۆنسەری (بۆ پەیداکرنا پارەی)
+st.markdown("""<div style="border: 2px solid #bf953f; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 20px;">
+<p style="margin:0;">Sponsor / سپۆنسەر</p>
+<h2 style="color: #fff !important; margin: 5px 0;">✨ ناڤێ کۆمپانیا تە ل ڤێرێ ✨</h2>
+<p style="color: #00FF00;">📞 0750 XXX XXXX</p></div>""", unsafe_allow_html=True)
+
+# 7. وەرگرتنا نرخ
 try:
     resp = requests.get("https://api.exchangerate-api.com/v4/latest/USD").json()
     one_usd = resp['rates']['IQD'] + 158.5
@@ -72,29 +50,20 @@ try:
 except:
     one_usd, iqd_100 = 1515, 151500
 
-# 7. نیشاندانا بها وەک "کارت" (وەک جاران)
-st.markdown(f"<h1>{t['title']}</h1>", unsafe_allow_html=True)
+# 8. نیشاندانا نرخ
+st.markdown(f"<h1 style='text-align:center;'>{t['title']}</h1>", unsafe_allow_html=True)
+st.markdown(f"""<div style="background-color: #111; padding: 20px; border-radius: 15px; border: 1px solid #bf953f; text-align: center;">
+<p>{t['usd']}</p><h1 style="color: #00FF00 !important;">{iqd_100:,.0f}</h1></div>""", unsafe_allow_html=True)
 
-st.markdown(f"""
-<div class="card">
-    <p>{t['usd']}</p>
-    <h1 style="color: #00FF00 !important; font-size: 45px; margin:0;">{iqd_100:,.0f}</h1>
-</div>
-<div class="card">
-    <p>{t['gold']}</p>
-    <h1 style="color: #FFD700 !important; font-size: 45px; margin:0;">495,000</h1>
-</div>
-""", unsafe_allow_html=True)
-
-# 8. حسابکرن
+# 9. پشکا گوهۆڕینا دۆلاری (ئۆتۆماتیکی و Enter)
 st.write("---")
-usd_val = st.number_input("$ USD:", min_value=0.0, value=100.0)
-st.markdown(f"<h2 style='color:#00FF00;'>{usd_val * one_usd:,.0f} IQD</h2>", unsafe_allow_html=True)
+st.markdown(f"<h3>{t['calc']}</h3>", unsafe_allow_html=True)
+usd_input = st.number_input("$ USD:", min_value=0.0, value=100.0)
+if st.button(t['btn']) or usd_input:
+    res = usd_input * one_usd
+    st.markdown(f"<h2 style='text-align:center; color:#00FF00;'>{res:,.0f} IQD</h2>", unsafe_allow_html=True)
 
-# 9. واتسئاپا تە (07503233348)
-st.markdown(f'<a href="https://wa.me/9647503233348" class="wa-btn">💬 {t["wa"]}</a>', unsafe_allow_html=True)
-
-# 10. Sidebar (Matin Control)
+# 10. Sidebar (بینەران)
 with st.sidebar:
     st.write("### Matin Control")
     pw = st.text_input("Password:", type="password")
