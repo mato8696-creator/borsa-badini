@@ -8,9 +8,9 @@ st.set_page_config(page_title="بۆڕسا دهۆک", page_icon="💰")
 # 2. نووکرنا ئۆتۆماتیک
 st_autorefresh(interval=60000, limit=100, key="fscounter")
 
-# 3. ژمارەکەر
+# 3. ژمارەکەرێ سادە
 if 'visits' not in st.session_state:
-    st.session_state.visits = 15
+    st.session_state.visits = 20
 st.session_state.visits += 1
 
 # 4. ستایلێ CSS
@@ -27,9 +27,9 @@ st.markdown("""
 
 # 5. زمان و وەرگێڕان
 translations = {
-    "Kurdish": {"title": "دهۆک", "curr": "دراڤەکێ هەلبژێرە:", "res": "ئەنجام ب دینار:"},
-    "Arabic": {"title": "دهوك", "curr": "اختر العملة:", "res": "النتيجة بالدينار:"},
-    "English": {"title": "Duhok", "curr": "Select Currency:", "res": "Result in IQD:"}
+    "Kurdish": {"title": "دهۆک", "curr": "دراڤەکێ هەلبژێرە:", "res": "ئەنجام ب دینار:", "tg_btn": "📩 پەیوەندی ب مە بکە (تێلەگرام)"},
+    "Arabic": {"title": "دهوك", "curr": "اختر العملة:", "res": "النتيجة بالدينار:", "tg_btn": "📩 اتصل بنا (تيليجرام)"},
+    "English": {"title": "Duhok", "curr": "Select Currency:", "res": "Result in IQD:", "tg_btn": "📩 Contact Us (Telegram)"}
 }
 lang = st.radio("", ["Kurdish", "Arabic", "English"], horizontal=True)
 t = translations[lang]
@@ -67,12 +67,12 @@ else: res = (amt / irr_rate) * iqd
 # 10. نیشاندانا ئەنجامی
 st.success(f"{t['res']} {res:,.0f}")
 
-# 11. ڕیکلام و واتسئاپ
+# 11. ڕیکلام و تێلەگرام (ل شوینا واتسئاپێ)
 st.write("---")
-st.markdown("""
-<div style="background-color:#25D366; padding:10px; border-radius:10px; text-align:center;">
-    <a href="https://wa.me/9647500000000" style="color:white; text-decoration:none; font-weight:bold;">
-        WhatsApp بۆ ڕیکلامێ
-    </a>
-</div>
+st.markdown(f"""
+<div style="background-color:#0088cc; padding:15px; border-radius:10px; text-align:center;">
+    <a href="https://t.me/badinimatin" target="_blank" style="color:white; text-decoration:none; font-weight:bold; font-size:18px;">
+        {t['tg_btn']}
+    </div>
+</a>
 """, unsafe_allow_html=True)
