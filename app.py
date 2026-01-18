@@ -13,7 +13,7 @@ if 'language' not in st.session_state: st.session_state.language = None
 if 'count' not in st.session_state: st.session_state.count = 1756 
 st.session_state.count += 1
 
-# 3. لاپەڕێ دەسپێکێ (زمان)
+# 3. لاپەڕێ دەسپێکێ
 if st.session_state.language is None:
     st.markdown("""<style> .stApp { background-color: #000; text-align: center; } h2, p { color: #bf953f !important; } 
     div.stButton > button { background-color: #1a1c23 !important; color: white !important; border: 1px solid #bf953f !important; border-radius: 10px; height: 50px; } </style>""", unsafe_allow_html=True)
@@ -31,15 +31,15 @@ if st.session_state.language is None:
 translations = {
     "Kurdish": {
         "title": "بۆڕسا دهۆک یا جیهانی", "usd_live": "بهایێ دۆلاری (١٠٠$)", "gold_live": "بهایێ زێڕی (٢١)", 
-        "usd_calc": "💵 گوهۆڕینا دۆلاری (ئۆتۆماتیکی)", "gold_calc": "⚖️ حسابکرنا زێڕی (غرام)", "res": "ئەنجام ب دینار:"
+        "usd_calc": "💵 گوهۆڕینا دۆلاری (ئۆتۆماتیکی)", "gold_calc": "⚖️ حسابکرنا زێڕی (غرام)", "res": "ئەنجام ب دینار:", "tele": "کەنالێ تێلەگرامی"
     },
     "Arabic": {
         "title": "بورصة دهوك العالمية", "usd_live": "سعر الدولار (١٠٠$)", "gold_live": "سعر الذهب (٢١)", 
-        "usd_calc": "💵 تحويل الدولار (تلقائي)", "gold_calc": "⚖️ حساب الذهب (غرام)", "res": "النتيجة بالدينار:"
+        "usd_calc": "💵 تحويل الدولار (تلقائي)", "gold_calc": "⚖️ حساب الذهب (غرام)", "res": "النتيجة بالدينار:", "tele": "قناة التيليجرام"
     },
     "English": {
         "title": "Duhok Global Borsa", "usd_live": "USD Rate (100$)", "gold_live": "Gold Rate (21K)", 
-        "usd_calc": "💵 Live USD Converter", "gold_calc": "⚖️ Live Gold Calculator", "res": "Result in IQD:"
+        "usd_calc": "💵 Live USD Converter", "gold_calc": "⚖️ Live Gold Calculator", "res": "Result in IQD:", "tele": "Telegram Channel"
     }
 }
 t = translations[st.session_state.language]
@@ -54,6 +54,21 @@ st.markdown(f"""
     input {{ background-color: #111 !important; color: white !important; border: 1px solid #bf953f !important; font-size: 20px !important; }}
     .result-box {{ background-color: rgba(0,255,0,0.1); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #00FF00; margin-top: 10px; }}
     [data-testid="stSidebar"] {{ background-color: rgba(0,0,0,0.95) !important; border-right: 1px solid #bf953f; }}
+    
+    /* ستایلێ دوکما تێلەگرامێ */
+    .tele-btn {{
+        display: block;
+        background: linear-gradient(45deg, #0088cc, #005580);
+        color: white !important;
+        text-align: center;
+        padding: 15px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 18px;
+        margin-top: 20px;
+        border: 1px solid #fff;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -77,7 +92,6 @@ with c2: st.markdown(f"""<div class="card"><p>{t['gold_live']}</p><h2 style="col
 st.write("---")
 st.markdown(f"<h3>{t['usd_calc']}</h3>", unsafe_allow_html=True)
 usd_val = st.number_input("$ USD Amount:", min_value=0.0, value=100.0, step=50.0)
-# ئەنجام ئێکسەر ل خوارێ دیار دبیت بێ کلیک کرنا دوکمێ
 result_usd = usd_val * one_usd
 st.markdown(f"""<div class="result-box"><p style="margin:0; color:#fff;">{t['res']}</p>
 <h2 style="color:#00FF00 !important; margin:0;">{result_usd:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
@@ -86,13 +100,15 @@ st.markdown(f"""<div class="result-box"><p style="margin:0; color:#fff;">{t['res
 st.write("---")
 st.markdown(f"<h3>{t['gold_calc']}</h3>", unsafe_allow_html=True)
 gold_val = st.number_input("Gram:", min_value=0.0, value=26.0, step=1.0)
-# ئەنجام ئێکسەر ل خوارێ دیار دبیت
 result_gold = gold_val * gold_gram
 st.markdown(f"""<div style="background-color:rgba(255,255,255,0.1); padding:15px; border-radius:10px; text-align:center; border:1px solid #bf953f;">
 <p style="margin:0; color:#fff;">{t['res']}</p>
 <h2 style="color:#fcf6ba !important; margin:0;">{result_gold:,.0f} IQD</h2></div>""", unsafe_allow_html=True)
 
-# 10. Sidebar
+# 10. لایێ تێلەگرامێ (ئەوا تە دڤیا بزڤریت)
+st.markdown(f'<a href="https://t.me/badinimatin" target="_blank" class="tele-btn">🔗 {t["tele"]}</a>', unsafe_allow_html=True)
+
+# 11. Sidebar
 with st.sidebar:
     st.markdown("<h3 style='color:#bf953f;'>Matin Control</h3>", unsafe_allow_html=True)
     pw = st.text_input("Password:", type="password")
